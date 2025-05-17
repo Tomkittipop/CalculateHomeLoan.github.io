@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,39 +14,46 @@
             padding: 20px;
             background-color: #f5f5f5;
         }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
+
         h1 {
             text-align: center;
             margin-bottom: 30px;
             color: #1a365d;
         }
+
         .input-section {
             background-color: #f9fafb;
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 30px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
+
         .input-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
         }
+
         .input-group {
             margin-bottom: 15px;
         }
+
         label {
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
         }
+
         input {
             width: 100%;
             padding: 10px;
@@ -53,6 +61,7 @@
             border-radius: 4px;
             font-size: 16px;
         }
+
         button {
             background-color: #3b82f6;
             color: white;
@@ -65,101 +74,132 @@
             margin-top: 15px;
             transition: background-color 0.3s;
         }
+
         button:hover {
             background-color: #2563eb;
         }
+
         .summary-section {
             background-color: #f9fafb;
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 30px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
+
         .summary-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 15px;
         }
+
         .summary-item {
             display: flex;
             justify-content: space-between;
             padding: 10px 0;
             border-bottom: 1px solid #e5e7eb;
         }
+
         .summary-label {
             font-weight: normal;
         }
+
         .summary-value {
             font-weight: bold;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
             font-size: 14px;
         }
-        th, td {
+
+        th,
+        td {
             border: 1px solid #e5e7eb;
             padding: 12px;
             text-align: center;
         }
+
         th {
             background-color: #f3f4f6;
             font-weight: 600;
         }
+
         tr:nth-child(even) {
             background-color: #f9fafb;
         }
+
         tr:hover {
             background-color: #f3f4f6;
         }
+
         .text-right {
             text-align: right;
         }
+
         .hidden {
             display: none;
         }
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
             }
-            th, td {
+
+            th,
+            td {
                 padding: 8px;
                 font-size: 13px;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>คำนวณการชำระหนี้บ้าน</h1>
-        
+
         <div class="input-section">
             <div class="input-grid">
                 <div class="input-group">
                     <label for="loanAmount">ยอดหนี้เริ่มต้น (บาท)</label>
-                    <input type="number" id="loanAmount" value="2813552.25" step="0.01" min="0">
+                    <input type="number" id="loanAmount" value="0.00" step="0.01" min="0">
                 </div>
-                
+
                 <div class="input-group">
                     <label for="interestRate">อัตราดอกเบี้ย (% ต่อปี)</label>
-                    <input type="number" id="interestRate" value="3.39" step="0.01" min="0">
+                    <input type="number" id="interestRate" value="0.00" step="0.01" min="0">
                 </div>
-                
+
                 <div class="input-group">
                     <label for="monthlyPayment">ยอดชำระต่องวด (บาท)</label>
-                    <input type="number" id="monthlyPayment" value="25000" step="0.01" min="0">
+                    <input type="number" id="monthlyPayment" value="0.00" step="0.01" min="0">
                 </div>
-                
+
                 <div class="input-group">
                     <label for="startDate">วันที่เริ่มชำระ</label>
-                    <input type="date" id="startDate" value="2025-04-18">
+                    <input type="date" id="startDate">
+
+                    <script>
+                        window.addEventListener('DOMContentLoaded', () => {
+                            const today = new Date();
+                            const yyyy = today.getFullYear();
+                            const mm = String(today.getMonth() + 1).padStart(2, '0'); // เดือนเริ่มที่ 0
+                            const dd = String(today.getDate()).padStart(2, '0');
+
+                            const formattedDate = `${dd}-${mm}-${yyyy}`;
+                            document.getElementById('startDate').value = formattedDate;
+                        });
+                    </script>
+
                 </div>
             </div>
-            
+
             <button id="calculateBtn">คำนวณ</button>
         </div>
-        
+
         <div id="summarySection" class="summary-section hidden">
             <h2>สรุปข้อมูล</h2>
             <div class="summary-grid">
@@ -167,34 +207,34 @@
                     <span class="summary-label">เงินกู้ทั้งหมด:</span>
                     <span id="totalLoan" class="summary-value">0 บาท</span>
                 </div>
-                
+
                 <div class="summary-item">
                     <span class="summary-label">จำนวนงวดทั้งหมด:</span>
                     <span id="totalPayments" class="summary-value">0 งวด</span>
                 </div>
-                
+
                 <div class="summary-item">
                     <span class="summary-label">จ่ายทั้งหมด:</span>
                     <span id="totalAmount" class="summary-value">0 บาท</span>
                 </div>
-                
+
                 <div class="summary-item">
                     <span class="summary-label">ดอกเบี้ยทั้งหมด:</span>
                     <span id="totalInterest" class="summary-value">0 บาท</span>
                 </div>
-                
+
                 <div class="summary-item">
                     <span class="summary-label">วันที่ชำระเสร็จสิ้น:</span>
                     <span id="payoffDate" class="summary-value">-</span>
                 </div>
-                
+
                 <div class="summary-item">
                     <span class="summary-label">ระยะเวลาผ่อนชำระ:</span>
                     <span id="loanTerm" class="summary-value">0 ปี 0 เดือน</span>
                 </div>
             </div>
         </div>
-        
+
         <div id="scheduleSection" class="hidden">
             <h2>ตารางการชำระหนี้</h2>
             <div style="overflow-x: auto;">
@@ -217,63 +257,63 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const calculateBtn = document.getElementById('calculateBtn');
             calculateBtn.addEventListener('click', calculateMortgage);
-            
+
             // คำนวณเมื่อโหลดหน้าเว็บ
             calculateMortgage();
-            
+
             function calculateMortgage() {
                 // รับค่าจาก input
                 const loanAmount = parseFloat(document.getElementById('loanAmount').value);
                 const annualInterestRate = parseFloat(document.getElementById('interestRate').value) / 100;
                 const monthlyPayment = parseFloat(document.getElementById('monthlyPayment').value);
                 const startDate = new Date(document.getElementById('startDate').value);
-                
+
                 // ตรวจสอบค่า input ว่าถูกต้องหรือไม่
                 if (isNaN(loanAmount) || isNaN(annualInterestRate) || isNaN(monthlyPayment) || !startDate) {
                     alert('กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง');
                     return;
                 }
-                
+
                 // คำนวณอัตราดอกเบี้ยต่อวัน
                 const dailyInterestRate = annualInterestRate / 365;
-                
+
                 // เริ่มต้นคำนวณตารางการชำระหนี้
                 let balance = loanAmount;
                 let currentDate = new Date(startDate);
                 let paymentNumber = 1;
                 let schedule = [];
-                
+
                 // คำนวณจนกว่ายอดหนี้จะหมด
                 while (balance > 0) {
                     // คำนวณวันชำระงวดถัดไป
                     let nextPaymentDate = new Date(currentDate);
                     nextPaymentDate.setMonth(nextPaymentDate.getMonth() + 1);
-                    
+
                     // รักษาวันที่ 18 ของเดือน
                     nextPaymentDate.setDate(18);
-                    
+
                     // คำนวณจำนวนวันระหว่างงวด
                     const daysInPeriod = Math.round((nextPaymentDate - currentDate) / (1000 * 60 * 60 * 24));
-                    
+
                     // คำนวณดอกเบี้ยสำหรับงวดนี้
                     const interestForPeriod = balance * dailyInterestRate * daysInPeriod;
-                    
+
                     // คำนวณเงินต้นที่ชำระในงวดนี้
                     let principalPayment = monthlyPayment - interestForPeriod;
-                    
+
                     // ตรวจสอบงวดสุดท้าย
                     let actualPayment = monthlyPayment;
                     if (balance + interestForPeriod < monthlyPayment) {
                         actualPayment = balance + interestForPeriod;
                         principalPayment = balance;
                     }
-                    
+
                     // ปรับยอดคงเหลือ
                     balance = Math.max(0, balance - principalPayment);
-                    
+
                     // เพิ่มข้อมูลลงในตาราง
                     schedule.push({
                         paymentNumber: paymentNumber,
@@ -284,43 +324,43 @@
                         principal: principalPayment,
                         remainingBalance: balance
                     });
-                    
+
                     // เตรียมสำหรับงวดถัดไป
                     currentDate = new Date(nextPaymentDate);
                     paymentNumber++;
-                    
+
                     // หากชำระหมดแล้ว ให้ออกจากลูป
                     if (balance <= 0) {
                         break;
                     }
                 }
-                
+
                 // คำนวณสรุป
                 let totalInterest = 0;
                 let totalPayment = 0;
-                
+
                 schedule.forEach(row => {
                     totalInterest += row.interest;
                     totalPayment += row.payment;
                 });
-                
+
                 // แสดงผลสรุป
                 document.getElementById('totalLoan').textContent = formatCurrency(loanAmount) + ' บาท';
                 document.getElementById('totalPayments').textContent = schedule.length + ' งวด';
                 document.getElementById('totalAmount').textContent = formatCurrency(totalPayment) + ' บาท';
                 document.getElementById('totalInterest').textContent = formatCurrency(totalInterest) + ' บาท';
                 document.getElementById('payoffDate').textContent = formatDate(schedule[schedule.length - 1].date);
-                document.getElementById('loanTerm').textContent = 
-                    Math.floor(schedule.length / 12) + ' ปี ' + 
+                document.getElementById('loanTerm').textContent =
+                    Math.floor(schedule.length / 12) + ' ปี ' +
                     (schedule.length % 12) + ' เดือน';
-                
+
                 // แสดง section สรุปข้อมูล
                 document.getElementById('summarySection').classList.remove('hidden');
-                
+
                 // สร้างตารางการชำระหนี้
                 const tableBody = document.querySelector('#paymentSchedule tbody');
                 tableBody.innerHTML = '';
-                
+
                 schedule.forEach(row => {
                     const newRow = document.createElement('tr');
                     newRow.innerHTML = `
@@ -334,18 +374,18 @@
                     `;
                     tableBody.appendChild(newRow);
                 });
-                
+
                 // แสดง section ตารางการชำระหนี้
                 document.getElementById('scheduleSection').classList.remove('hidden');
-                
+
                 return schedule;
             }
-            
+
             // ฟังก์ชันฟอร์แมตวันที่เป็น dd/mm/yyyy
             function formatDate(date) {
                 return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
             }
-            
+
             // ฟังก์ชันฟอร์แมตตัวเลขเป็นสกุลเงินบาท
             function formatCurrency(amount) {
                 return amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
@@ -353,4 +393,5 @@
         });
     </script>
 </body>
+
 </html>
