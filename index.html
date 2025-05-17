@@ -165,17 +165,17 @@
             <div class="input-grid">
                 <div class="input-group">
                     <label for="loanAmount">ยอดหนี้เริ่มต้น (บาท)</label>
-                    <input type="number" id="loanAmount" value="0.00" step="0.01" min="0">
+                    <input type="number" id="loanAmount" value="" step="0.01" min="0" placeholder="0.00">
                 </div>
 
                 <div class="input-group">
                     <label for="interestRate">อัตราดอกเบี้ย (% ต่อปี)</label>
-                    <input type="number" id="interestRate" value="0.00" step="0.01" min="0">
+                    <input type="number" id="interestRate"  value="" step="0.01" min="0" placeholder="0.00">
                 </div>
 
                 <div class="input-group">
                     <label for="monthlyPayment">ยอดชำระต่องวด (บาท)</label>
-                    <input type="number" id="monthlyPayment" value="0.00" step="0.01" min="0">
+                    <input type="number" id="monthlyPayment"  value="" step="0.01" min="0" placeholder="0.00">
                 </div>
 
                 <div class="input-group">
@@ -271,11 +271,11 @@
                 const monthlyPayment = parseFloat(document.getElementById('monthlyPayment').value);
                 const startDate = new Date(document.getElementById('startDate').value);
 
-                // ตรวจสอบค่า input ว่าถูกต้องหรือไม่
-                if (isNaN(loanAmount) || isNaN(annualInterestRate) || isNaN(monthlyPayment) || !startDate) {
-                    alert('กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง');
-                    return;
-                }
+                // // ตรวจสอบค่า input ว่าถูกต้องหรือไม่
+                // if (isNaN(loanAmount) || isNaN(annualInterestRate) || isNaN(monthlyPayment) || !startDate) {
+                //     alert('กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง');
+                //     return;
+                // }
 
                 // คำนวณอัตราดอกเบี้ยต่อวัน
                 const dailyInterestRate = annualInterestRate / 365;
