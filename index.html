@@ -143,6 +143,15 @@
             display: none;
         }
 
+        .export-btn {
+            background-color: #10b981;
+            margin-top: 20px;
+        }
+
+        .export-btn:hover {
+            background-color: #059669;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -170,30 +179,17 @@
 
                 <div class="input-group">
                     <label for="interestRate">อัตราดอกเบี้ย (% ต่อปี)</label>
-                    <input type="number" id="interestRate"  value="" step="0.01" min="0" placeholder="0.00">
+                    <input type="number" id="interestRate" value="" step="0.01" min="0" placeholder="0.00">
                 </div>
 
                 <div class="input-group">
                     <label for="monthlyPayment">ยอดชำระต่องวด (บาท)</label>
-                    <input type="number" id="monthlyPayment"  value="" step="0.01" min="0" placeholder="0.00">
+                    <input type="number" id="monthlyPayment" value="" step="0.01" min="0" placeholder="0.00">
                 </div>
 
                 <div class="input-group">
                     <label for="startDate">วันที่เริ่มชำระ</label>
                     <input type="date" id="startDate">
-
-                    <script>
-                        window.addEventListener('DOMContentLoaded', () => {
-                            const today = new Date();
-                            const yyyy = today.getFullYear();
-                            const mm = String(today.getMonth() + 1).padStart(2, '0'); // เดือนเริ่มที่ 0
-                            const dd = String(today.getDate()).padStart(2, '0');
-
-                            const formattedDate = `${dd}-${mm}-${yyyy}`;
-                            document.getElementById('startDate').value = formattedDate;
-                        });
-                    </script>
-
                 </div>
             </div>
 
@@ -253,16 +249,20 @@
                     <tbody></tbody>
                 </table>
             </div>
+            <button id="exportCsvBtn" class="export-btn">Export to CSV</button>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const calculateBtn = document.getElementById('calculateBtn');
-            calculateBtn.addEventListener('click', calculateMortgage);
+            // Set default date
+            const today = new Date();
+            document.getElementById('startDate').value = today.toISOString().split('T')[0];
 
-            // คำนวณเมื่อโหลดหน้าเว็บ
-            calculateMortgage();
+            const calculateBtn = document.getElementById('calculateBtn');
+            const exportCsvBtn = document.getElementById('exportCsvBtn');
+            calculateBtn.addEventListener('click', calculateMortgage);
+            exportCsvBtn.addEventListener('click', exportToCsv);
 
             function calculateMortgage() {
                 // รับค่าจาก input
@@ -271,11 +271,11 @@
                 const monthlyPayment = parseFloat(document.getElementById('monthlyPayment').value);
                 const startDate = new Date(document.getElementById('startDate').value);
 
-                // // ตรวจสอบค่า input ว่าถูกต้องหรือไม่
-                // if (isNaN(loanAmount) || isNaN(annualInterestRate) || isNaN(monthlyPayment) || !startDate) {
-                //     alert('กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง');
-                //     return;
-                // }
+                // ตรวจสอบค่า input ว่าถูกต้องหรือไม่
+                if (isNaN(loanAmount) || isNaN(annualInterestRate) || isNaN(monthlyPayment) || !startDate) {
+                    alert('กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง');
+                    return;
+                }
 
                 // คำนวณอัตราดอกเบี้ยต่อวัน
                 const dailyInterestRate = annualInterestRate / 365;
@@ -291,8 +291,6 @@
                     // คำนวณวันชำระงวดถัดไป
                     let nextPaymentDate = new Date(currentDate);
                     nextPaymentDate.setMonth(nextPaymentDate.getMonth() + 1);
-
-                    // รักษาวันที่ 18 ของเดือน
                     nextPaymentDate.setDate(18);
 
                     // คำนวณจำนวนวันระหว่างงวด
@@ -378,7 +376,54 @@
                 // แสดง section ตารางการชำระหนี้
                 document.getElementById('scheduleSection').classList.remove('hidden');
 
-                return schedule;
+                // Store schedule for CSV export
+                window.paymentSchedule = schedule;
+            }
+
+            function exportToCsv() {
+                if (!window.paymentSchedule || window.paymentSchedule.length === 0) {
+                    alert('กรุณาคำนวณตารางการชำระหนี้ก่อน');
+                    return;
+                }
+
+                // CSV headers
+                const headers = [
+                    'งวดที่',
+                    'วันที่ชำระ',
+                    'จำนวนวัน',
+                    'ยอดชำระ (บาท)',
+                    'ดอกเบี้ย (บาท)',
+                    'เงินต้น (บาท)',
+                    'ยอดคงเหลือ (บาท)'
+                ];
+
+                // CSV rows
+                const rows = window.paymentSchedule.map(row => [
+                    row.paymentNumber,
+                    formatDate(row.date),
+                    row.daysInPeriod,
+                    row.payment.toFixed(2),
+                    row.interest.toFixed(2),
+                    row.principal.toFixed(2),
+                    row.remainingBalance.toFixed(2)
+                ]);
+
+                // Create CSV content with UTF-8 BOM
+                const csvContent = [
+                    '\uFEFF' + headers.join(','), // Add BOM for UTF-8
+                    ...rows.map(row => row.join(','))
+                ].join('\n');
+
+                // Create and trigger download
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'payment_schedule.csv');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
             }
 
             // ฟังก์ชันฟอร์แมตวันที่เป็น dd/mm/yyyy
