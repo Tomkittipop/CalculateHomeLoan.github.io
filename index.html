@@ -2,6 +2,8 @@
 <html lang="th">
 
 <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>คำนวณการชำระหนี้บ้าน</title>
@@ -188,8 +190,13 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="startDate">วันที่เริ่มชำระ</label>
+                    <label for="startDate">วันที่เริ่มสัญญา</label>
                     <input type="date" id="startDate">
+                </div>
+
+                <div class="input-group">
+                    <label for="paymentDay">วันที่ชำระในแต่ละเดือน (1-31)</label>
+                    <input type="number" id="paymentDay" value="18" min="1" max="31" step="1">
                 </div>
             </div>
 
@@ -250,6 +257,8 @@
                 </table>
             </div>
             <button id="exportCsvBtn" class="export-btn">Export to CSV</button>
+            <button id="exportPdfBtn" class="export-btn" style="background-color:rgb(255, 71, 71);">Export to
+                PDF</button>
         </div>
     </div>
 
@@ -261,8 +270,11 @@
 
             const calculateBtn = document.getElementById('calculateBtn');
             const exportCsvBtn = document.getElementById('exportCsvBtn');
+            const exportPdfBtn = document.getElementById('exportPdfBtn');
+
             calculateBtn.addEventListener('click', calculateMortgage);
             exportCsvBtn.addEventListener('click', exportToCsv);
+            exportPdfBtn.addEventListener('click', exportToPdf);
 
             function calculateMortgage() {
                 // รับค่าจาก input
@@ -270,10 +282,17 @@
                 const annualInterestRate = parseFloat(document.getElementById('interestRate').value) / 100;
                 const monthlyPayment = parseFloat(document.getElementById('monthlyPayment').value);
                 const startDate = new Date(document.getElementById('startDate').value);
+                const paymentDay = parseInt(document.getElementById('paymentDay').value);
 
                 // ตรวจสอบค่า input ว่าถูกต้องหรือไม่
-                if (isNaN(loanAmount) || isNaN(annualInterestRate) || isNaN(monthlyPayment) || !startDate) {
+                if (isNaN(loanAmount) || isNaN(annualInterestRate) || isNaN(monthlyPayment) || !startDate || isNaN(paymentDay)) {
                     alert('กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง');
+                    return;
+                }
+
+                // ตรวจสอบว่าวันที่ชำระอยู่ในช่วง 1-31
+                if (paymentDay < 1 || paymentDay > 31) {
+                    alert('วันที่ชำระต้องอยู่ระหว่าง 1-31');
                     return;
                 }
 
@@ -291,7 +310,16 @@
                     // คำนวณวันชำระงวดถัดไป
                     let nextPaymentDate = new Date(currentDate);
                     nextPaymentDate.setMonth(nextPaymentDate.getMonth() + 1);
-                    nextPaymentDate.setDate(18);
+                    
+                    // กำหนดวันที่ของเดือนตามที่ผู้ใช้กำหนด
+                    nextPaymentDate.setDate(1); // เริ่มที่วันที่ 1 ของเดือน
+                    
+                    // ตรวจสอบจำนวนวันสูงสุดในเดือนนั้น
+                    const lastDayOfMonth = new Date(nextPaymentDate.getFullYear(), nextPaymentDate.getMonth() + 1, 0).getDate();
+                    
+                    // กำหนดวันที่ชำระโดยไม่เกินจำนวนวันในเดือนนั้น
+                    const actualPaymentDay = Math.min(paymentDay, lastDayOfMonth);
+                    nextPaymentDate.setDate(actualPaymentDay);
 
                     // คำนวณจำนวนวันระหว่างงวด
                     const daysInPeriod = Math.round((nextPaymentDate - currentDate) / (1000 * 60 * 60 * 24));
@@ -434,6 +462,47 @@
             // ฟังก์ชันฟอร์แมตตัวเลขเป็นสกุลเงินบาท
             function formatCurrency(amount) {
                 return amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+            }
+
+            // เพิ่มในส่วน scriptPDF
+            function exportToPdf() {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                // กำหนดหัวตารางเป็นภาษาอังกฤษโดยตรง
+                const headers = ['Payment No.', 'Date', 'Days', 'Payment', 'Interest', 'Principal', 'Balance'];
+
+                const table = document.getElementById('paymentSchedule');
+                const body = [];
+                const bodyElements = table.querySelectorAll('tbody tr');
+                bodyElements.forEach(tr => {
+                    const rowData = Array.from(tr.querySelectorAll('td')).map(td => td.textContent);
+                    body.push(rowData);
+                });
+
+                doc.autoTable({
+                    head: [headers],
+                    body: body,
+                    styles: {
+                        fontSize: 10,
+                        cellPadding: 1.5,
+                        overflow: 'linebreak',
+                        halign: 'center',
+                        valign: 'middle'
+                    },
+                    headStyles: {
+                        fillColor: [0, 0, 0],
+                        color: [0, 0, 0],
+                        fontStyle: 'bold',
+                        halign: 'center'
+                    }
+                });
+
+                doc.save('payment_schedule.pdf');
             }
         });
     </script>
