@@ -7,134 +7,297 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>คำนวณการชำระหนี้บ้าน</title>
+    <!-- Google Font - Prompt -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
+        :root {
+            --primary: #4361ee;
+            --primary-hover: #3a56d4;
+            --secondary: #2ec4b6;
+            --secondary-hover: #21a99c;
+            --danger: #e63946;
+            --danger-hover: #c32f3a;
+            --success: #2a9d8f;
+            --success-hover: #228276;
+            --warning: #f9c74f;
+            --light-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-primary: #1d3557;
+            --text-secondary: #495057;
+            --text-muted: #6c757d;
+            --border-color: #e9ecef;
+            --header-bg: #f1f5fd;
+            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
             margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--light-bg);
+            min-height: 100vh;
+            padding: 24px 16px;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: var(--card-bg);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--header-bg);
+            padding: 28px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
         }
 
         h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #1a365d;
+            color: var(--primary);
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
         }
 
-        .input-section {
-            background-color: #f9fafb;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .content {
+            padding: 24px;
+        }
+
+        .section {
+            margin-bottom: 32px;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+            background-color: var(--light-bg);
+            overflow: hidden;
+        }
+
+        .section-header {
+            background-color: var(--header-bg);
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-header i {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .section-body {
+            padding: 24px;
         }
 
         .input-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
         }
 
         .input-group {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
 
         label {
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
         }
 
-        input {
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        input, textarea {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            font-size: 16px;
+            padding: 12px;
+            padding-left: 40px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-family: 'Prompt', sans-serif;
+            color: var(--text-primary);
+            background-color: var(--card-bg);
+            transition: var(--transition);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
         }
 
         button {
-            background-color: #3b82f6;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: var(--primary);
             color: white;
             border: none;
-            padding: 12px 20px;
-            font-size: 16px;
-            border-radius: 4px;
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: var(--radius-sm);
             cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-            transition: background-color 0.3s;
+            transition: var(--transition);
+            font-family: 'Prompt', sans-serif;
         }
 
         button:hover {
-            background-color: #2563eb;
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
         }
 
-        .summary-section {
-            background-color: #f9fafb;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        .btn-block {
+            width: 100%;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+        }
+
+        .btn-success:hover {
+            background-color: var(--success-hover);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background-color: var(--danger-hover);
         }
 
         .summary-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
+            gap: 16px;
         }
 
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #e5e7eb;
+        .summary-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--primary);
         }
 
-        .summary-label {
-            font-weight: normal;
+        .summary-title {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
         }
 
         .summary-value {
-            font-weight: bold;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 24px;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            background-color: var(--card-bg);
             font-size: 14px;
         }
 
-        th,
-        td {
-            border: 1px solid #e5e7eb;
-            padding: 12px;
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px 16px;
             text-align: center;
         }
 
         th {
-            background-color: #f3f4f6;
-            font-weight: 600;
+            background-color: var(--header-bg);
+            font-weight: 500;
+            color: var(--text-primary);
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         tr:nth-child(even) {
-            background-color: #f9fafb;
+            background-color: rgba(0, 0, 0, 0.02);
         }
 
         tr:hover {
-            background-color: #f3f4f6;
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+
+        th:first-child, td:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 20;
+        }
+
+        th:first-child {
+            background-color: var(--header-bg);
+            z-index: 30;
+        }
+
+        td:first-child {
+            background-color: var(--card-bg);
+            font-weight: 500;
+        }
+
+        tr:nth-child(even) td:first-child {
+            background-color: rgba(0, 0, 0, 0.02);
         }
 
         .text-right {
@@ -145,120 +308,264 @@
             display: none;
         }
 
-        .export-btn {
-            background-color: #10b981;
-            margin-top: 20px;
-        }
-
-        .export-btn:hover {
-            background-color: #059669;
+        .export-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: 24px;
+            flex-wrap: wrap;
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 15px;
+            body {
+                padding: 12px;
             }
 
-            th,
-            td {
-                padding: 8px;
+            .container {
+                border-radius: var(--radius-sm);
+            }
+
+            header {
+                padding: 20px 16px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .content {
+                padding: 16px;
+            }
+
+            .section-body {
+                padding: 16px;
+            }
+
+            .input-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            th, td {
+                padding: 10px;
                 font-size: 13px;
             }
+
+            .export-buttons {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            button {
+                padding: 12px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .section-header {
+                padding: 12px 16px;
+            }
+
+            h2 {
+                font-size: 1.2rem;
+            }
+
+            label {
+                font-size: 0.9rem;
+            }
+
+            input, textarea, button {
+                font-size: 0.95rem;
+                padding: 10px;
+                padding-left: 36px;
+            }
+
+            .summary-title {
+                font-size: 0.8rem;
+            }
+
+            .summary-value {
+                font-size: 1.2rem;
+            }
+
+            th, td {
+                padding: 8px;
+                font-size: 12px;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 24px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1>คำนวณการชำระหนี้บ้าน</h1>
+        <header>
+            <h1>คำนวณการชำระหนี้บ้าน</h1>
+            <p class="subtitle">คำนวณแผนการชำระหนี้และดูปฏิทินการผ่อนชำระรายเดือน</p>
+        </header>
 
-        <div class="input-section">
-            <div class="input-grid">
-                <div class="input-group">
-                    <label for="loanAmount">ยอดหนี้เริ่มต้น (บาท)</label>
-                    <input type="number" id="loanAmount" value="" step="0.01" min="0" placeholder="0.00">
+        <div class="content">
+            <div class="section">
+                <div class="section-header">
+                    <i class="fas fa-calculator"></i>
+                    <h2>ข้อมูลสินเชื่อ</h2>
                 </div>
+                <div class="section-body">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="loanAmount">ยอดหนี้เริ่มต้น (บาท)</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-money-bill-wave input-icon"></i>
+                                <input type="number" id="loanAmount" value="" step="0.01" min="0" placeholder="0.00">
+                            </div>
+                        </div>
 
-                <div class="input-group">
-                    <label for="interestRate">อัตราดอกเบี้ย (% ต่อปี)</label>
-                    <input type="number" id="interestRate" value="" step="0.01" min="0" placeholder="0.00">
-                </div>
+                        <div class="input-group">
+                            <label for="interestRate">อัตราดอกเบี้ย (% ต่อปี)</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-percent input-icon"></i>
+                                <input type="number" id="interestRate" value="" step="0.01" min="0" placeholder="0.00">
+                            </div>
+                        </div>
 
-                <div class="input-group">
-                    <label for="monthlyPayment">ยอดชำระต่องวด (บาท)</label>
-                    <input type="number" id="monthlyPayment" value="" step="0.01" min="0" placeholder="0.00">
-                </div>
+                        <div class="input-group">
+                            <label for="monthlyPayment">ยอดชำระต่องวด (บาท)</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-hand-holding-usd input-icon"></i>
+                                <input type="number" id="monthlyPayment" value="" step="0.01" min="0" placeholder="0.00">
+                            </div>
+                        </div>
 
-                <div class="input-group">
-                    <label for="startDate">วันที่เริ่มสัญญา</label>
-                    <input type="date" id="startDate">
-                </div>
+                        <div class="input-group">
+                            <label for="startDate">วันที่เริ่มสัญญา</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-calendar-alt input-icon"></i>
+                                <input type="date" id="startDate">
+                            </div>
+                        </div>
 
-                <div class="input-group">
-                    <label for="paymentDay">วันที่ชำระในแต่ละเดือน (1-31)</label>
-                    <input type="number" id="paymentDay" value="18" min="1" max="31" step="1">
+                        <div class="input-group">
+                            <label for="paymentDay">วันที่ชำระในแต่ละเดือน (1-31)</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-calendar-day input-icon"></i>
+                                <input type="number" id="paymentDay" value="18" min="1" max="31" step="1">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="extraPayments">โปะเงินเพิ่ม (งวด:จำนวนเงิน, เช่น "5:10000,10:20000")</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-coins input-icon" style="top: 16px;"></i>
+                                <textarea id="extraPayments" placeholder="เช่น 5:10000,10:20000"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="calculateBtn" class="btn-block">
+                        <i class="fas fa-calculator"></i>
+                        คำนวณ
+                    </button>
                 </div>
             </div>
 
-            <button id="calculateBtn">คำนวณ</button>
+            <div id="summarySection" class="section hidden">
+                <div class="section-header">
+                    <i class="fas fa-chart-pie"></i>
+                    <h2>สรุปข้อมูล</h2>
+                </div>
+                <div class="section-body">
+                    <div class="summary-grid">
+                        <div class="summary-card">
+                            <div class="summary-title">เงินกู้ทั้งหมด</div>
+                            <div id="totalLoan" class="summary-value">0 บาท</div>
+                        </div>
+
+                        <div class="summary-card">
+                            <div class="summary-title">จำนวนงวดทั้งหมด</div>
+                            <div id="totalPayments" class="summary-value">0 งวด</div>
+                        </div>
+
+                        <div class="summary-card">
+                            <div class="summary-title">จ่ายทั้งหมด</div>
+                            <div id="totalAmount" class="summary-value">0 บาท</div>
+                        </div>
+
+                        <div class="summary-card">
+                            <div class="summary-title">ดอกเบี้ยทั้งหมด</div>
+                            <div id="totalInterest" class="summary-value">0 บาท</div>
+                        </div>
+
+                        <div class="summary-card">
+                            <div class="summary-title">โปะเงินเพิ่มทั้งหมด</div>
+                            <div id="totalExtraPayments" class="summary-value">0 บาท</div>
+                        </div>
+
+                        <div class="summary-card">
+                            <div class="summary-title">วันที่ชำระเสร็จสิ้น</div>
+                            <div id="payoffDate" class="summary-value">-</div>
+                        </div>
+
+                        <div class="summary-card">
+                            <div class="summary-title">ระยะเวลาผ่อนชำระ</div>
+                            <div id="loanTerm" class="summary-value">0 ปี 0 เดือน</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="scheduleSection" class="section hidden">
+                <div class="section-header">
+                    <i class="fas fa-table"></i>
+                    <h2>ตารางการชำระหนี้</h2>
+                </div>
+                <div class="section-body">
+                    <div class="table-container">
+                        <table id="paymentSchedule">
+                            <thead>
+                                <tr>
+                                    <th>งวดที่</th>
+                                    <th>วันที่ชำระ</th>
+                                    <th>จำนวนวัน</th>
+                                    <th>ยอดชำระ (บาท)</th>
+                                    <th>โปะเพิ่ม (บาท)</th>
+                                    <th>ดอกเบี้ย (บาท)</th>
+                                    <th>เงินต้น (บาท)</th>
+                                    <th>ยอดคงเหลือ (บาท)</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="export-buttons">
+                        <button id="exportCsvBtn" class="btn-success">
+                            <i class="fas fa-file-csv"></i>
+                            Export to CSV
+                        </button>
+                        <button id="exportPdfBtn" class="btn-danger">
+                            <i class="fas fa-file-pdf"></i>
+                            Export to PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div id="summarySection" class="summary-section hidden">
-            <h2>สรุปข้อมูล</h2>
-            <div class="summary-grid">
-                <div class="summary-item">
-                    <span class="summary-label">เงินกู้ทั้งหมด:</span>
-                    <span id="totalLoan" class="summary-value">0 บาท</span>
-                </div>
-
-                <div class="summary-item">
-                    <span class="summary-label">จำนวนงวดทั้งหมด:</span>
-                    <span id="totalPayments" class="summary-value">0 งวด</span>
-                </div>
-
-                <div class="summary-item">
-                    <span class="summary-label">จ่ายทั้งหมด:</span>
-                    <span id="totalAmount" class="summary-value">0 บาท</span>
-                </div>
-
-                <div class="summary-item">
-                    <span class="summary-label">ดอกเบี้ยทั้งหมด:</span>
-                    <span id="totalInterest" class="summary-value">0 บาท</span>
-                </div>
-
-                <div class="summary-item">
-                    <span class="summary-label">วันที่ชำระเสร็จสิ้น:</span>
-                    <span id="payoffDate" class="summary-value">-</span>
-                </div>
-
-                <div class="summary-item">
-                    <span class="summary-label">ระยะเวลาผ่อนชำระ:</span>
-                    <span id="loanTerm" class="summary-value">0 ปี 0 เดือน</span>
-                </div>
-            </div>
-        </div>
-
-        <div id="scheduleSection" class="hidden">
-            <h2>ตารางการชำระหนี้</h2>
-            <div style="overflow-x: auto;">
-                <table id="paymentSchedule">
-                    <thead>
-                        <tr>
-                            <th>งวดที่</th>
-                            <th>วันที่ชำระ</th>
-                            <th>จำนวนวัน</th>
-                            <th>ยอดชำระ (บาท)</th>
-                            <th>ดอกเบี้ย (บาท)</th>
-                            <th>เงินต้น (บาท)</th>
-                            <th>ยอดคงเหลือ (บาท)</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <button id="exportCsvBtn" class="export-btn">Export to CSV</button>
-            <button id="exportPdfBtn" class="export-btn" style="background-color:rgb(255, 71, 71);">Export to
-                PDF</button>
+        <div class="footer">
+            © 2025 คำนวณการชำระหนี้บ้าน - เครื่องมือช่วยวางแผนการเงิน
         </div>
     </div>
 
@@ -276,92 +583,90 @@
             exportCsvBtn.addEventListener('click', exportToCsv);
             exportPdfBtn.addEventListener('click', exportToPdf);
 
+            function parseExtraPayments(input) {
+                const extraPayments = {};
+                if (!input.trim()) return extraPayments;
+
+                const pairs = input.split(',').map(item => item.trim());
+                for (const pair of pairs) {
+                    const [paymentNo, amount] = pair.split(':').map(item => item.trim());
+                    const paymentNumber = parseInt(paymentNo);
+                    const extraAmount = parseFloat(amount);
+                    if (!isNaN(paymentNumber) && !isNaN(extraAmount) && paymentNumber > 0 && extraAmount >= 0) {
+                        extraPayments[paymentNumber] = extraAmount;
+                    }
+                }
+                return extraPayments;
+            }
+
             function calculateMortgage() {
-                // รับค่าจาก input
                 const loanAmount = parseFloat(document.getElementById('loanAmount').value);
                 const annualInterestRate = parseFloat(document.getElementById('interestRate').value) / 100;
                 const monthlyPayment = parseFloat(document.getElementById('monthlyPayment').value);
                 const startDate = new Date(document.getElementById('startDate').value);
                 const paymentDay = parseInt(document.getElementById('paymentDay').value);
+                const extraPaymentsInput = document.getElementById('extraPayments').value;
+                const extraPayments = parseExtraPayments(extraPaymentsInput);
 
-                // ตรวจสอบค่า input ว่าถูกต้องหรือไม่
                 if (isNaN(loanAmount) || isNaN(annualInterestRate) || isNaN(monthlyPayment) || !startDate || isNaN(paymentDay)) {
                     alert('กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง');
                     return;
                 }
 
-                // ตรวจสอบว่าวันที่ชำระอยู่ในช่วง 1-31
                 if (paymentDay < 1 || paymentDay > 31) {
                     alert('วันที่ชำระต้องอยู่ระหว่าง 1-31');
                     return;
                 }
 
-                // คำนวณอัตราดอกเบี้ยต่อวัน
                 const dailyInterestRate = annualInterestRate / 365;
 
-                // เริ่มต้นคำนวณตารางการชำระหนี้
                 let balance = loanAmount;
                 let currentDate = new Date(startDate);
                 let paymentNumber = 1;
                 let schedule = [];
+                let totalExtraPayments = 0;
 
-                // คำนวณจนกว่ายอดหนี้จะหมด
                 while (balance > 0) {
-                    // คำนวณวันชำระงวดถัดไป
                     let nextPaymentDate = new Date(currentDate);
                     nextPaymentDate.setMonth(nextPaymentDate.getMonth() + 1);
-                    
-                    // กำหนดวันที่ของเดือนตามที่ผู้ใช้กำหนด
-                    nextPaymentDate.setDate(1); // เริ่มที่วันที่ 1 ของเดือน
-                    
-                    // ตรวจสอบจำนวนวันสูงสุดในเดือนนั้น
+                    nextPaymentDate.setDate(1);
                     const lastDayOfMonth = new Date(nextPaymentDate.getFullYear(), nextPaymentDate.getMonth() + 1, 0).getDate();
-                    
-                    // กำหนดวันที่ชำระโดยไม่เกินจำนวนวันในเดือนนั้น
                     const actualPaymentDay = Math.min(paymentDay, lastDayOfMonth);
                     nextPaymentDate.setDate(actualPaymentDay);
 
-                    // คำนวณจำนวนวันระหว่างงวด
                     const daysInPeriod = Math.round((nextPaymentDate - currentDate) / (1000 * 60 * 60 * 24));
-
-                    // คำนวณดอกเบี้ยสำหรับงวดนี้
                     const interestForPeriod = balance * dailyInterestRate * daysInPeriod;
+                    const extraPayment = extraPayments[paymentNumber] || 0;
+                    totalExtraPayments += extraPayment;
 
-                    // คำนวณเงินต้นที่ชำระในงวดนี้
-                    let principalPayment = monthlyPayment - interestForPeriod;
-
-                    // ตรวจสอบงวดสุดท้าย
-                    let actualPayment = monthlyPayment;
-                    if (balance + interestForPeriod < monthlyPayment) {
+                    let principalPayment = monthlyPayment - interestForPeriod + extraPayment;
+                    let actualPayment = monthlyPayment + extraPayment;
+                    if (balance + interestForPeriod < monthlyPayment + extraPayment) {
                         actualPayment = balance + interestForPeriod;
                         principalPayment = balance;
                     }
 
-                    // ปรับยอดคงเหลือ
                     balance = Math.max(0, balance - principalPayment);
 
-                    // เพิ่มข้อมูลลงในตาราง
                     schedule.push({
                         paymentNumber: paymentNumber,
                         date: new Date(nextPaymentDate),
                         daysInPeriod: daysInPeriod,
                         payment: actualPayment,
+                        extraPayment: extraPayment,
                         interest: interestForPeriod,
                         principal: principalPayment,
                         remainingBalance: balance
                     });
 
-                    // เตรียมสำหรับงวดถัดไป
                     currentDate = new Date(nextPaymentDate);
                     paymentNumber++;
 
-                    // หากชำระหมดแล้ว ให้ออกจากลูป
                     if (balance <= 0) {
                         break;
                     }
                 }
 
-                // คำนวณสรุป
                 let totalInterest = 0;
                 let totalPayment = 0;
 
@@ -370,20 +675,18 @@
                     totalPayment += row.payment;
                 });
 
-                // แสดงผลสรุป
                 document.getElementById('totalLoan').textContent = formatCurrency(loanAmount) + ' บาท';
                 document.getElementById('totalPayments').textContent = schedule.length + ' งวด';
                 document.getElementById('totalAmount').textContent = formatCurrency(totalPayment) + ' บาท';
                 document.getElementById('totalInterest').textContent = formatCurrency(totalInterest) + ' บาท';
+                document.getElementById('totalExtraPayments').textContent = formatCurrency(totalExtraPayments) + ' บาท';
                 document.getElementById('payoffDate').textContent = formatDate(schedule[schedule.length - 1].date);
                 document.getElementById('loanTerm').textContent =
                     Math.floor(schedule.length / 12) + ' ปี ' +
                     (schedule.length % 12) + ' เดือน';
 
-                // แสดง section สรุปข้อมูล
                 document.getElementById('summarySection').classList.remove('hidden');
 
-                // สร้างตารางการชำระหนี้
                 const tableBody = document.querySelector('#paymentSchedule tbody');
                 tableBody.innerHTML = '';
 
@@ -394,6 +697,7 @@
                         <td>${formatDate(row.date)}</td>
                         <td>${row.daysInPeriod}</td>
                         <td class="text-right">${formatCurrency(row.payment)}</td>
+                        <td class="text-right">${formatCurrency(row.extraPayment)}</td>
                         <td class="text-right">${formatCurrency(row.interest)}</td>
                         <td class="text-right">${formatCurrency(row.principal)}</td>
                         <td class="text-right">${formatCurrency(row.remainingBalance)}</td>
@@ -401,10 +705,7 @@
                     tableBody.appendChild(newRow);
                 });
 
-                // แสดง section ตารางการชำระหนี้
                 document.getElementById('scheduleSection').classList.remove('hidden');
-
-                // Store schedule for CSV export
                 window.paymentSchedule = schedule;
             }
 
@@ -414,35 +715,33 @@
                     return;
                 }
 
-                // CSV headers
                 const headers = [
                     'งวดที่',
                     'วันที่ชำระ',
                     'จำนวนวัน',
                     'ยอดชำระ (บาท)',
+                    'โปะเพิ่ม (บาท)',
                     'ดอกเบี้ย (บาท)',
                     'เงินต้น (บาท)',
                     'ยอดคงเหลือ (บาท)'
                 ];
 
-                // CSV rows
                 const rows = window.paymentSchedule.map(row => [
                     row.paymentNumber,
                     formatDate(row.date),
                     row.daysInPeriod,
                     row.payment.toFixed(2),
+                    row.extraPayment.toFixed(2),
                     row.interest.toFixed(2),
                     row.principal.toFixed(2),
                     row.remainingBalance.toFixed(2)
                 ]);
 
-                // Create CSV content with UTF-8 BOM
                 const csvContent = [
-                    '\uFEFF' + headers.join(','), // Add BOM for UTF-8
+                    '\uFEFF' + headers.join(','),
                     ...rows.map(row => row.join(','))
                 ].join('\n');
 
-                // Create and trigger download
                 const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
@@ -454,17 +753,6 @@
                 URL.revokeObjectURL(url);
             }
 
-            // ฟังก์ชันฟอร์แมตวันที่เป็น dd/mm/yyyy
-            function formatDate(date) {
-                return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-            }
-
-            // ฟังก์ชันฟอร์แมตตัวเลขเป็นสกุลเงินบาท
-            function formatCurrency(amount) {
-                return amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-            }
-
-            // เพิ่มในส่วน scriptPDF
             function exportToPdf() {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF({
@@ -473,8 +761,7 @@
                     format: 'a4'
                 });
 
-                // กำหนดหัวตารางเป็นภาษาอังกฤษโดยตรง
-                const headers = ['Payment No.', 'Date', 'Days', 'Payment', 'Interest', 'Principal', 'Balance'];
+                const headers = ['Payment No.', 'Date', 'Days', 'Payment', 'Extra Payment', 'Interest', 'Principal', 'Balance'];
 
                 const table = document.getElementById('paymentSchedule');
                 const body = [];
@@ -495,8 +782,8 @@
                         valign: 'middle'
                     },
                     headStyles: {
-                        fillColor: [0, 0, 0],
-                        color: [0, 0, 0],
+                        fillColor: [67, 97, 238],
+                        color: [255, 255, 255],
                         fontStyle: 'bold',
                         halign: 'center'
                     }
@@ -504,8 +791,18 @@
 
                 doc.save('payment_schedule.pdf');
             }
+
+            function formatDate(date) {
+                return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+            }
+            function formatCurrency(amount) {
+                return amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+            }
+            
         });
     </script>
 </body>
 
 </html>
+
+
